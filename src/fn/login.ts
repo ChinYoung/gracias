@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import { getCloudflareContext } from '@opennextjs/cloudflare'
 
 let token = ''
 let tokenLifetime = '1977-01-01T00:00:00Z'
@@ -13,13 +14,18 @@ function getCookieValue(
 }
 
 export async function login() {
+  console.log('🚀 ~ login ~ token:', token)
+  console.log('🚀 ~ login ~ tokenLifetime:', tokenLifetime)
   if (token && dayjs(tokenLifetime).isAfter(dayjs())) {
     return token
   }
+  console.log('🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀  No valid token, re-login')
+
+  const env = getCloudflareContext().env
   const res = await fetch('https://power.rakkipower.win', {
     headers: {
-      'CF-Access-Client-Id': process.env.CF_CLIENT_ID!,
-      'CF-Access-Client-Secret': process.env.CF_CLIENT_SECRET!,
+      'CF-Access-Client-Id': env.CF_CLIENT_ID,
+      'CF-Access-Client-Secret': env.CF_CLIENT_SECRET,
     },
   })
   const setCookieStr = res.headers.get('set-cookie')
