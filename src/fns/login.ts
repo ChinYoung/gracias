@@ -17,6 +17,7 @@ function getCookieValue(
 export async function login() {
   console.log('🚀 ~ login ~ token:', token)
   console.log('🚀 ~ login ~ tokenLifetime:', tokenLifetime)
+
   if (token && tokenLifetime && dayjs(tokenLifetime).isAfter(dayjs())) {
     console.log('return token from closure')
     return token
@@ -26,6 +27,9 @@ export async function login() {
   const { value, metadata } = await kv.getWithMetadata<{ expiration: string }>(
     CF_TOKEN,
   )
+
+  console.log('🚀 ~ login ~ metadata:', metadata)
+  console.log('🚀 ~ login ~ value:', value)
 
   if (value && metadata) {
     token = value
@@ -37,7 +41,7 @@ export async function login() {
 
   console.log('****************No valid token; re-login****************')
 
-  const res = await fetch('https://power.rakkipower.win', {
+  const res = await fetch(env.STRAPI_URL, {
     headers: {
       'CF-Access-Client-Id': env.CF_CLIENT_ID,
       'CF-Access-Client-Secret': env.CF_CLIENT_SECRET,
@@ -48,9 +52,14 @@ export async function login() {
   const tokenLifetimeRes = getCookieValue(setCookieStr, 'Expires')
   if (tokenRes && tokenLifetimeRes) {
     token = tokenRes
+    const now = dayjs(tokenLifetimeRes).unix()
+    console.log('🚀 ~ login ~ now:', now)
+    const ttl = dayjs(tokenLifetimeRes).subtract(5, 'minute').unix()
+    console.log('🚀 ~ login ~ ttl:', ttl)
     kv.put(CF_TOKEN, token, {
-      expiration: dayjs(tokenLifetime).unix(),
-      metadata: { expiration: tokenLifetimeRes },
+      // 5 minutes before expiration, to avoid inconsistency of KV
+      expiration: ttl,
+      metadata: { expiration: dayjs(ttl).format() },
     })
   }
   return token

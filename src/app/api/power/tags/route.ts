@@ -1,16 +1,12 @@
-import { login } from '@/fn/login'
+import { fetchStrapi } from '@/fns/fetchStrapi'
+import { TStrapiRes, TStrapiTag } from '@/types/strapi.type'
 import { getCloudflareContext } from '@opennextjs/cloudflare'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
   const env = getCloudflareContext().env
-  const cf_token = await login()
-  const res = await fetch(`${env.STRAPI_URL}/api/tags`, {
-    headers: {
-      Authorization: `Bearer ${env.STRAPI_TOKEN}`,
-      'cf-access-token': cf_token,
-    },
+  const res = await fetchStrapi(`${env.STRAPI_URL}/api/tags`)
+  return new NextResponse(res.body, {
+    headers: { 'Content-Type': 'application/json' },
   })
-  const text = await res.text()
-  return new NextResponse(text)
 }
