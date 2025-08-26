@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body>
+      <body className='p-2 bg-gray-50'>
         <AntdRegistry>
           <GlobalHeader />
           <main>{children}</main>

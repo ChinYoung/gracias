@@ -5,25 +5,35 @@ import Link from 'next/link'
 import qs from 'qs'
 import { FC } from 'react'
 
+const MenuItem: FC<{ menu: TStrapiMenu; prefix: string }> = ({
+  menu,
+  prefix,
+}) => {
+  const thisPath =
+    menu.path === '/' ? '/' : `${prefix ? prefix : '/'}${menu.path}/`
+  return (
+    <div className='px-4 py-2 hover:scale-110 w-full h-fit rounded-lg cursor-pointer'>
+      <Link href={thisPath} className='text-blue-500'>
+        {menu.name}
+      </Link>
+    </div>
+  )
+}
+
 const RootMenu: FC<{ menu: TStrapiMenu }> = ({ menu }) => {
-  const thisPath = menu.path === '/' ? '/' : `/{menu.path}/`
   return (
     <div key={menu.documentId} className='relative w-full group'>
       {/* root */}
-      <div className='px-4 py-2 border w-full h-fit rounded-lg'>
-        <Link href={thisPath} className='text-blue-500'>
-          {menu.name}
-        </Link>
-      </div>
+      <MenuItem menu={menu} prefix='/' />
       {/* sub paths */}
       {menu.children && menu.children.length > 0 && (
-        <div className='ml-2 bg-amber-100 px-4 rounded-lg shadow absolute left-full top-0 hidden opacity-0 group-hover:block group-hover:opacity-100 transition-discrete transition-all duration-800'>
+        <div className='shadow-2xl px-4 rounded-lg absolute left-full top-0 hidden opacity-0 group-hover:block group-hover:opacity-100 transition-discrete transition-all duration-800'>
           {menu.children.map((child) => (
             <div
               key={child.documentId}
-              className='border-b border-gray-300 m-1 last:border-none'
+              className='border-b border-gray-300 p-1 last:border-none'
             >
-              {generateMenu(child, `/{menu.path}/`)}
+              {generateMenu(child, `/${menu.path}/`)}
             </div>
           ))}
         </div>
@@ -33,16 +43,10 @@ const RootMenu: FC<{ menu: TStrapiMenu }> = ({ menu }) => {
 }
 
 function generateMenu(menu: TStrapiMenu, prefix: string) {
-  const thisPath =
-    menu.path === '/' ? '/' : `${prefix ? prefix : '/'}${menu.path}/`
   return (
     <div key={menu.documentId} className='flex gap-2'>
       {/* root */}
-      <div className='px-4 py-2 h-fit'>
-        <Link href={thisPath} className='text-blue-500'>
-          {menu.name}
-        </Link>
-      </div>
+      <MenuItem menu={menu} prefix={prefix} />
       {/* sub paths */}
       <div>
         {menu.children &&
