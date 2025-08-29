@@ -16,10 +16,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className='px-10 pt-5 bg-gray-50'>
+      <body className='pt-5 bg-gray-50 relative'>
         <AntdRegistry>
           <GlobalHeader />
-          <main className='px-2'>{children}</main>
+          <main className='h-screen px-10'>{children}</main>
           <GlobalFooter />
         </AntdRegistry>
       </body>

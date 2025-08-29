@@ -1,0 +1,100 @@
+'use client'
+
+import { TStrapiMenu } from '@/types/strapi.type'
+import { set } from 'lodash'
+import Link from 'next/link'
+import { FC, UIEvent, useCallback, useEffect, useRef, useState } from 'react'
+
+const MenuItem: FC<{ menu: TStrapiMenu; prefix: string }> = ({
+  menu,
+  prefix,
+}) => {
+  const thisPath =
+    menu.path === '/' ? '/' : `${prefix ? prefix : '/'}${menu.path}/`
+  return (
+    <div className='px-2 py-1 hover:scale-110 w-full h-fit rounded-lg cursor-pointer'>
+      <Link href={thisPath} className='whitespace-nowrap'>
+        {menu.name}
+      </Link>
+    </div>
+  )
+}
+
+const RootMenu: FC<{ menu: TStrapiMenu }> = ({ menu }) => {
+  return (
+    <div key={menu.documentId} className='relative w-fit group'>
+      {/* root */}
+      <MenuItem menu={menu} prefix='/' />
+      {/* sub paths */}
+      {menu.children && menu.children.length > 0 && (
+        <div className='absolute left-0 top-[120%] bg-white'>
+          <div className='shadow-2xl px-4 rounded-lg hidden opacity-0 group-hover:block group-hover:opacity-100 transition-discrete transition-all duration-800'>
+            {menu.children.map((child) => (
+              <div
+                key={child.documentId}
+                className='border-b border-gray-300 p-1 last:border-none'
+              >
+                {renderChildMenu(child, `/${menu.path}/`)}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function renderChildMenu(menu: TStrapiMenu, prefix: string) {
+  return (
+    <div key={menu.documentId} className='flex gap-2'>
+      {/* root */}
+      <MenuItem menu={menu} prefix={prefix} />
+      {/* sub paths */}
+      <div>
+        {menu.children &&
+          menu.children.length > 0 &&
+          menu.children.map((child) => (
+            <div key={child.documentId}>
+              {renderChildMenu(child, `${prefix ? prefix : '/'}${menu.path}/`)}
+            </div>
+          ))}
+      </div>
+    </div>
+  )
+}
+
+export const RootMenus: FC<{ menus: TStrapiMenu[] }> = ({ menus }) => {
+  const [isSticky, setIsSticky] = useState(false)
+  console.log('🚀 ~ RootMenu ~ isSticky:', isSticky)
+
+  const divRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function scrollHandler() {
+      if (!divRef.current) return
+      const rect = divRef.current?.getBoundingClientRect()
+      console.log('🚀 ~ RootMenu ~ rect:', rect)
+      setIsSticky(rect.top <= 0)
+    }
+    window.addEventListener('scroll', scrollHandler)
+    return () => {
+      window.removeEventListener('scroll', scrollHandler)
+    }
+  }, [])
+  return (
+    <div
+      className='w-full sticky top-0 pt-2 pb-1 flex gap-2 justify-start bg-white px-10'
+      ref={divRef}
+    >
+      {isSticky ? (
+        <div className='absolute top-0 left-0 right-0 bottom-0 shadow-2xl'></div>
+      ) : null}
+      {menus
+        .filter((i) => !i.parent)
+        .sort((a, b) => b.priority - a.priority)
+        .map((menu) => (
+          <RootMenu key={menu.documentId} menu={menu} />
+        ))}
+    </div>
+  )
+}

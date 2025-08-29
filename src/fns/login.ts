@@ -15,9 +15,6 @@ function getCookieValue(
 }
 
 export async function login() {
-  console.log('🚀 ~ login ~ token:', token)
-  console.log('🚀 ~ login ~ tokenLifetime:', tokenLifetime)
-
   if (token && tokenLifetime && dayjs(tokenLifetime).isAfter(dayjs())) {
     console.log('return token from closure')
     return token
@@ -27,9 +24,6 @@ export async function login() {
   const { value, metadata } = await kv.getWithMetadata<{ expiration: string }>(
     CF_TOKEN,
   )
-
-  console.log('🚀 ~ login ~ metadata:', metadata)
-  console.log('🚀 ~ login ~ value:', value)
 
   if (value && metadata) {
     token = value
@@ -48,13 +42,10 @@ export async function login() {
     },
   })
   const setCookieStr = res.headers.get('set-cookie')
-  console.log('🚀 ~ login ~ setCookieStr:', setCookieStr)
   const tokenRes = getCookieValue(setCookieStr, 'CF_Authorization')
-  console.log('🚀 ~ login ~ tokenRes:', tokenRes)
   if (tokenRes) {
     token = tokenRes
     const ttl = dayjs().add(1, 'day').subtract(5, 'minute').unix()
-    console.log('🚀 ~ login ~ ttl:', ttl)
     kv.put(CF_TOKEN, token, {
       // 5 minutes before expiration, to avoid inconsistency of KV
       expiration: ttl,
