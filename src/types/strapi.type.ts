@@ -32,3 +32,13 @@ export type TStrapiMenu = TStrapiItem<{
   parent: TStrapiMenu | null
   priority: number
 }>
+
+// TODO: Implement blog details
+export type TStrapiBlogs = TStrapiItem<{
+  title: string
+}>
+
+export type TStrapiBlogDetail = TStrapiItem<{
+  title: string
+  md_content: string
+}>
