@@ -19,7 +19,11 @@ export default function RootLayout({
       <body className='pt-5 bg-gray-50 relative'>
         <AntdRegistry>
           <GlobalHeader />
-          <main className='min-h-screen px-10'>{children}</main>
+          <main className='min-h-screen flex justify-center gap-2 w-full'>
+            <aside className='h-full'></aside>
+            <div className='max-w-7xl h-full w-full'>{children}</div>
+            <aside className='h-full'></aside>
+          </main>
           <GlobalFooter />
         </AntdRegistry>
       </body>

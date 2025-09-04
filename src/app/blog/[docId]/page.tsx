@@ -12,7 +12,7 @@ const BlogDetail: FC<{ params: Promise<{ docId: string }> }> = async ({
   console.log('🚀 ~ BlogDetail ~ jsonData:', jsonData)
   return (
     <div>
-      <div className='m-auto max-w-7xl'>
+      <div className='m-auto'>
         <MarkdownBlog
           updatedAt={jsonData.data.updatedAt}
           title={jsonData.data.title}
