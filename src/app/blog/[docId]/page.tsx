@@ -9,10 +9,16 @@ const BlogDetail: FC<{ params: Promise<{ docId: string }> }> = async ({
   const { docId } = await params
   const blog = await fetchStrapi(`blogs/${docId}`)
   const jsonData = await blog.json<TStrapiRes<TStrapiBlogDetail>>()
+  console.log('🚀 ~ BlogDetail ~ jsonData:', jsonData)
   return (
     <div>
-      <h1>{docId}</h1>
-      <MarkdownBlog content={jsonData.data.md_content} />
+      <div className='m-auto max-w-7xl'>
+        <MarkdownBlog
+          updatedAt={jsonData.data.updatedAt}
+          title={jsonData.data.title}
+          content={jsonData.data.md_content}
+        />
+      </div>
     </div>
   )
 }

@@ -27,12 +27,12 @@ const RootMenu: FC<{ menu: TStrapiMenu }> = ({ menu }) => {
       <MenuItem menu={menu} prefix='/' />
       {/* sub paths */}
       {menu.children && menu.children.length > 0 && (
-        <div className='absolute left-0 top-[120%] bg-white'>
-          <div className='shadow-2xl px-4 rounded-lg hidden opacity-0 group-hover:block group-hover:opacity-100 transition-discrete transition-all duration-800'>
+        <div className='absolute left-0 top-[100%]  hidden opacity-0 group-hover:block group-hover:opacity-100 transition-discrete transition-all duration-800'>
+          <div className='mt-2 px-10 py-4 bg-white rounded-lg shadow-2xl'>
             {menu.children.map((child) => (
               <div
                 key={child.documentId}
-                className='border-b border-gray-300 p-1 last:border-none'
+                className='border-b border-gray-300 last:border-none py-4'
               >
                 {renderChildMenu(child, `/${menu.path}/`)}
               </div>
@@ -46,11 +46,13 @@ const RootMenu: FC<{ menu: TStrapiMenu }> = ({ menu }) => {
 
 function renderChildMenu(menu: TStrapiMenu, prefix: string) {
   return (
-    <div key={menu.documentId} className='flex gap-2'>
+    <div key={menu.documentId} className='flex w-full'>
       {/* root */}
-      <MenuItem menu={menu} prefix={prefix} />
+      <div className='w-1/2 pr-8'>
+        <MenuItem menu={menu} prefix={prefix} />
+      </div>
       {/* sub paths */}
-      <div>
+      <div className='w-1/2'>
         {menu.children &&
           menu.children.length > 0 &&
           menu.children.map((child) => (
