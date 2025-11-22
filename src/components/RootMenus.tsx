@@ -23,21 +23,25 @@ const MenuItem: FC<{ menu: TStrapiMenu; prefix: string }> = ({
   );
 };
 
-const RootMenu: FC<{ menu: TStrapiMenu }> = ({ menu }) => {
+const RootMenu: FC<{ menu: TStrapiMenu; allMenus: TStrapiMenu[] }> = ({
+  menu,
+  allMenus,
+}) => {
+  console.log("🚀 ~ RootMenu ~ childMenu:", allMenus);
+  const childMenu = allMenus.filter(
+    (i) => (i.parent || {}).documentId === menu.documentId
+  );
   return (
     <div key={menu.documentId} className="relative w-fit group">
       {/* root */}
       <MenuItem menu={menu} prefix="/" />
       {/* sub paths */}
-      {menu.children && menu.children.length > 0 && (
+      {childMenu && childMenu.length > 0 && (
         <div className="group absolute left-0 top-full invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-discrete transition-all duration-800">
           <Card size="small">
             {menu.children.map((child) => (
-              <div
-                key={child.documentId}
-                className="border-b border-gray-300 last:border-none"
-              >
-                {renderChildMenu(child, `/${menu.path}/`)}
+              <div key={child.documentId}>
+                {renderChildMenu(child, `/${menu.path}/`, allMenus)}
               </div>
             ))}
           </Card>
@@ -47,28 +51,38 @@ const RootMenu: FC<{ menu: TStrapiMenu }> = ({ menu }) => {
   );
 };
 
-function renderChildMenu(menu: TStrapiMenu, prefix: string) {
+function renderChildMenu(
+  menu: TStrapiMenu,
+  prefix: string,
+  allMenus: TStrapiMenu[]
+) {
+  const childMenu = allMenus.filter(
+    (i) => (i.parent || {}).documentId === menu.documentId
+  );
   return (
-    <div key={menu.documentId} className="flex w-full">
+    <div key={menu.documentId} className="w-full">
       {/* root */}
-      <div>
-        <MenuItem menu={menu} prefix={prefix} />
-      </div>
+      <MenuItem menu={menu} prefix={prefix} />
       {/* sub paths */}
-      <div className="w-1/2">
-        {menu.children &&
-          menu.children.length > 0 &&
-          menu.children.map((child) => (
-            <div key={child.documentId}>
-              {renderChildMenu(child, `${prefix ? prefix : "/"}${menu.path}/`)}
+      {childMenu && childMenu.length > 0 && (
+        <>
+          {childMenu.map((child) => (
+            <div key={child.documentId} className="indent-4">
+              {renderChildMenu(
+                child,
+                `${prefix ? prefix : "/"}${menu.path}/`,
+                allMenus
+              )}
             </div>
           ))}
-      </div>
+        </>
+      )}
     </div>
   );
 }
 
 export const RootMenus: FC<{ menus: TStrapiMenu[] }> = ({ menus }) => {
+  console.log("🚀 ~ RootMenus ~ menus:", menus);
   const [isSticky, setIsSticky] = useState(false);
 
   const divRef = useRef<HTMLDivElement>(null);
@@ -97,7 +111,7 @@ export const RootMenus: FC<{ menus: TStrapiMenu[] }> = ({ menus }) => {
           .filter((i) => !i.parent)
           .sort((a, b) => b.priority - a.priority)
           .map((menu) => (
-            <RootMenu key={menu.documentId} menu={menu} />
+            <RootMenu key={menu.documentId} menu={menu} allMenus={menus} />
           ))}
       </div>
     </ThemeProvider>
