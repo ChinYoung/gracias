@@ -3,11 +3,20 @@ import { fetchStrapi } from "@/fns/fetchStrapi";
 import { TStrapiBlogDetail, TStrapiRes } from "@/types/strapi.type";
 import { FC } from "react";
 
-const BlogDetail: FC<{ params: Promise<{ docId: string }> }> = async ({
-  params,
-}) => {
-  const { docId } = await params;
-  const blog = await fetchStrapi(`blogs/${docId}`);
+interface Props {
+  params: {
+    slugs: string[];
+  };
+  searchParams: Promise<{ id: string }>;
+}
+
+const BlogDetail: FC<Props> = async ({ params, searchParams }) => {
+  const { slugs } = await params;
+  const { id } = await searchParams;
+  if (!slugs.includes("article")) {
+    return <div>404</div>;
+  }
+  const blog = await fetchStrapi(`blogs/${id}`);
   const jsonData = await blog.json<TStrapiRes<TStrapiBlogDetail>>();
   return (
     <div className="m-auto">

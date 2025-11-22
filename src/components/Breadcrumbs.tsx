@@ -1,15 +1,15 @@
 "use client";
 
 import { TStrapiMenu } from "@/types/strapi.type";
-import Text from "antd/es/typography/Text";
 import { usePathname } from "next/navigation";
-import { FC, useState } from "react";
-import { ThemeProvider } from "./ThemeProvider";
+import { FC } from "react";
 import Link from "next/link";
 import { HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb as AntBreadcrumb } from "antd";
 
-export const Breadcrumbs: FC<{ menus: TStrapiMenu[] }> = ({ menus }) => {
+export const Breadcrumbs: FC<{ menus: TStrapiMenu[] }> = ({
+  menus: _menus,
+}) => {
   const pathname = usePathname();
 
   const formatBreadcrumbName = (path: string) => {
@@ -22,7 +22,7 @@ export const Breadcrumbs: FC<{ menus: TStrapiMenu[] }> = ({ menus }) => {
       "[id]": "详情", // 处理动态路由
     };
 
-    return nameMap[path] || "详情";
+    return nameMap[path] || path;
   };
 
   const breadcrumbItems = [

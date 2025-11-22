@@ -80,7 +80,6 @@ function renderChildMenu(
 }
 
 export const RootMenus: FC<{ menus: TStrapiMenu[] }> = ({ menus }) => {
-  console.log("🚀 ~ RootMenus ~ menus:", menus);
   const [isSticky, setIsSticky] = useState(false);
 
   const divRef = useRef<HTMLDivElement>(null);

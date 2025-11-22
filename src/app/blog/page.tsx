@@ -9,7 +9,7 @@ const Blog = async () => {
     <div>
       {jsonData.data.map((blog) => (
         <div key={blog.id}>
-          <Link href={`/blog/${blog.documentId}`}>
+          <Link href={`/blog/article?id=${blog.documentId}`}>
             <h2>{blog.title}</h2>
           </Link>
         </div>
