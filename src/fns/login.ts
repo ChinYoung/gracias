@@ -15,15 +15,15 @@ function getCookieValue(
 }
 
 export async function login() {
+  const isLocal = getCloudflareContext().env.IS_LOCAL
+  if (isLocal) {
+    return ''
+  }
   if (token && tokenLifetime && dayjs(tokenLifetime).isAfter(dayjs())) {
     console.log('return token from closure')
     return token
   }
   const { KV: kv, NEXTJS_ENV, STRAPI_URL, CF_CLIENT_ID, CF_CLIENT_SECRET, } = getCloudflareContext().env
-  console.log("🚀 ~ login ~ CF_CLIENT_SECRET:", CF_CLIENT_SECRET)
-  console.log("🚀 ~ login ~ CF_CLIENT_ID:", CF_CLIENT_ID)
-  console.log("🚀 ~ login ~ STRAPI_URL:", STRAPI_URL)
-  console.log("🚀 ~ login ~ NEXTJS_ENV:", NEXTJS_ENV)
   if (NEXTJS_ENV === 'development') {
     return ''
   }

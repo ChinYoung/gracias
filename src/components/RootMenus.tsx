@@ -16,7 +16,7 @@ const MenuItem: FC<{ menu: TStrapiMenu; prefix: string }> = ({
   const thisPath = menu.path === "/" ? "/" : path.join("/", prefix, menu.path);
   return (
     <div className="px-2 py-1 hover:scale-110 w-full h-fit rounded-lg cursor-pointer">
-      <Link href={thisPath} className="whitespace-nowrap flex gap-2">
+      <Link href={thisPath} className="whitespace-nowrap flex gap-2 font-serif">
         <Text>{menu.name}</Text>
       </Link>
     </div>
@@ -98,7 +98,7 @@ export const RootMenus: FC<{ menus: TStrapiMenu[] }> = ({ menus }) => {
   return (
     <ThemeProvider>
       <div
-        className="w-full sticky top-0 pt-2 pb-1 flex gap-2 justify-start  px-10 bg-[var(--background)]"
+        className="w-full sticky top-0 pt-2 pb-1 flex gap-2 justify-start  px-4 bg-[var(--background)]"
         ref={divRef}
       >
         {isSticky ? (

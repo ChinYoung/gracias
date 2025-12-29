@@ -3,6 +3,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 export async function fetchStrapi(...args: Parameters<typeof fetch>) {
   const env = getCloudflareContext().env;
+  console.log("🚀 ~ fetchStrapi ~ env.STRAPI_URL:", env.STRAPI_URL)
   const cf_token = await login();
   const res = await fetch(`${env.STRAPI_URL}/api/${args[0]}`, {
     ...args[1],
@@ -13,6 +14,7 @@ export async function fetchStrapi(...args: Parameters<typeof fetch>) {
     },
   });
   if (res.ok) {
+    console.log("🚀 ~ fetchStrapi ~ res:", res)
     return res;
   }
   if (res.status === 404) {
